@@ -9,6 +9,7 @@ import shutil
 from pathlib import Path
 import whisper
 from tqdm import tqdm
+import hashlib
 
 SUB_DIR = Path("subs")
 TMP_DIR = Path("tmp")
@@ -17,8 +18,10 @@ MODEL = whisper.load_model("medium")   # GPU? pick tiny/base/small otherwise
 
 def ensure_transcript(url: str):
     """Ensure we have a transcript for the given URL"""
+    # Use a hash of the URL for a unique filename
+    url_hash = hashlib.sha256(url.encode()).hexdigest()[:10]
     short = url.rstrip("/").split("/")[-1]
-    txt_path = SUB_DIR / f"{short}.txt"
+    txt_path = SUB_DIR / f"{short}_{url_hash}.txt"
     
     if txt_path.exists():
         print(f"✅ {short}: Transcript already exists")

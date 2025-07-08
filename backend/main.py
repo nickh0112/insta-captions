@@ -165,7 +165,10 @@ async def process_urls(job_id: str, urls: List[str]):
         # Write URLs to reels.txt
         with open(f"{workspace}/reels.txt", "w") as f:
             for url in urls:
-                f.write(f"{url}\n")
+                # Split on whitespace to handle pasted URLs separated by spaces or newlines
+                for u in url.split():
+                    if u.strip():
+                        f.write(f"{u.strip()}\n")
         
         jobs[job_id]["message"] = "Extracting existing captions..."
         jobs[job_id]["progress"] = 0.3
